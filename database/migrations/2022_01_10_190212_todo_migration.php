@@ -1,0 +1,36 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class TodoMigration extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('todos', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->boolean('active')->default(0);;
+            $table->date('deadline');
+            $table->enum('level', [1,2,3,4,5]);
+            $table->text('comment');
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        //
+    }
+}

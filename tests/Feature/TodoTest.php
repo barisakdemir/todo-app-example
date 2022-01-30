@@ -7,6 +7,10 @@ use Tests\TestCase;
 
 class TodoTest extends TestCase
 {
+    const SUCCESS_MESSAGE = 'successfully';
+    const COMMENT = "Test comment";
+    const COMMENT_EDIT = "Test comment Edit";
+
     /**
      * List todos
      *
@@ -32,11 +36,11 @@ class TodoTest extends TestCase
             'active' => 1,
             'deadline' => Carbon::now()->toDateString(),
             'level' => 3,
-            'comment' => "Test comment"
+            'comment' => self::COMMENT
         ])->assertStatus(200);
 
-        $this->assertStringContainsString('successfully', $response->getContent());
-        $this->assertStringContainsString('Test comment', $response->getContent());
+        $this->assertStringContainsString(self::SUCCESS_MESSAGE, $response->getContent());
+        $this->assertStringContainsString(self::COMMENT, $response->getContent());
     }
 
     /**
@@ -48,7 +52,7 @@ class TodoTest extends TestCase
     public function a_user_can_view_a_edit_todo(){
         $response = $this->get('/edit/1')->assertStatus(200);
 
-        $this->assertStringContainsString('Test comment', $response->getContent());
+        $this->assertStringContainsString(self::COMMENT, $response->getContent());
     }
 
     /**
@@ -60,15 +64,15 @@ class TodoTest extends TestCase
     public function a_user_can_patch_a_todo(){
         $response = $this->followingRedirects()->post('/edit/1', [
             '_method' => 'PATCH',
-            'name' => 'Test Edit',
+            'name' => 'Test',
             'active' => 1,
             'deadline' => Carbon::now()->toDateString(),
             'level' => 3,
-            'comment' => "Test comment Edit"
+            'comment' => self::COMMENT_EDIT
         ])->assertStatus(200);
 
-        $this->assertStringContainsString('successfully', $response->getContent());
-        $this->assertStringContainsString('Test comment Edit', $response->getContent());
+        $this->assertStringContainsString(self::SUCCESS_MESSAGE, $response->getContent());
+        $this->assertStringContainsString(self::COMMENT_EDIT, $response->getContent());
     }
 
     /**
@@ -82,8 +86,16 @@ class TodoTest extends TestCase
             '_method' => 'DELETE'
         ])->assertStatus(200);
 
-        $this->assertStringContainsString('successfully', $response->getContent());
+        $this->assertStringContainsString(self::SUCCESS_MESSAGE, $response->getContent());
+    }
 
+    /**
+     * delete check
+     *
+     * @return void
+     */
+    /** @test  */
+    public function is_todo_deleted(){
         //check still exist?
         $response = $this->get('/edit/1')->assertStatus(404);
     }
